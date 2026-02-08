@@ -33,7 +33,11 @@ test.describe("Shopping Cart – Add Item Tests", () => {
     await inventoryPage.cartLink.click();
     await cartPage.goToCheckout();
 
-    await checkoutPage.inputAddress("John", "Smith", "1989 San Francisco US");
+    await checkoutPage.inputAddress(
+      "John", 
+      "Smith", 
+      "1989 San Francisco US"
+    );
 
     await expect(checkoutPage.subtotalLabel).toContainText("$29.99");
     await expect(checkoutPage.taxLabel).toContainText("$2.40");
