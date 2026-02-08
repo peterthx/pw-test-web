@@ -1,3 +1,5 @@
+def playwrightAppDir = 'playwrightWebApp'
+
 pipeline {
     agent {
     docker {
@@ -20,7 +22,7 @@ pipeline {
 
         stage('Install & Setup') {
             steps {
-                dir('playwrightWebApp') {
+                dir(playwrightAppDir) {
                     sh 'npm ci'
                     sh 'npx playwright install --with-deps'
                 }
@@ -29,7 +31,7 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                dir('playwrightWebApp') {
+                dir(playwrightAppDir) {
                     sh 'npm run test'
                 }
             }
@@ -38,7 +40,7 @@ pipeline {
 
     post {
         always {
-            dir('playwrightWebApp') {
+            dir(playwrightAppDir) {
                 junit allowEmptyResults: true, testResults: 'test-results/*.xml'
                 archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
             }
