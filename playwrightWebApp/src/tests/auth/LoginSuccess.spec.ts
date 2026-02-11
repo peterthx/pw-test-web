@@ -1,11 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../pages/auth/LoginPage";
+import { LogoutPage } from "../../pages/auth/LogoutPage";
 
 test.describe("Login Form Tests", () => {
   let loginPage: LoginPage;
+  let logoutPage: LogoutPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
+    logoutPage = new LogoutPage(page);
     await loginPage.navigate();
   });
   test("Login and Logout normal user #1", async ({ page }) => {
@@ -16,8 +19,8 @@ test.describe("Login Form Tests", () => {
     await expect(page).toHaveURL(/inventory.html/);
 
     // Open menu and logout
-    await page.locator("#react-burger-menu-btn").click();
-    await page.locator('[data-test="logout-sidebar-link"]').click();
+    await logoutPage.openMenu();
+    await logoutPage.logout();
 
     // logout success (back to login page)
     await expect(page).toHaveURL("/");
@@ -31,8 +34,8 @@ test.describe("Login Form Tests", () => {
     await expect(page).toHaveURL(/inventory.html/);
 
     // Open menu and logout
-    await page.locator("#react-burger-menu-btn").click();
-    await page.locator('[data-test="logout-sidebar-link"]').click();
+    await logoutPage.openMenu();
+    await logoutPage.logout();
 
     // logout success (back to login page)
     await expect(page).toHaveURL("/");
@@ -46,8 +49,8 @@ test.describe("Login Form Tests", () => {
     await expect(page).toHaveURL(/inventory.html/);
 
     // Open menu and logout
-    await page.locator("#react-burger-menu-btn").click();
-    await page.locator('[data-test="logout-sidebar-link"]').click();
+    await logoutPage.openMenu();
+    await logoutPage.logout();
 
     // logout success (back to login page)
     await expect(page).toHaveURL("/");

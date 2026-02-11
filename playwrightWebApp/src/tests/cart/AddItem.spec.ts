@@ -1,17 +1,20 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../pages/auth/LoginPage";
+import { LogoutPage } from "../../pages/auth/LogoutPage";
 import { InventoryPage } from "../../pages/inventory/InventoryPage";
 import { CartPage } from "../../pages/cart/CartPage";
 import { CheckoutPage } from "../../pages/cart/CheckoutPage";
 
 test.describe("Shopping Cart – Add Item Tests", () => {
   let loginPage: LoginPage;
+  let logoutPage: LogoutPage;
   let inventoryPage: InventoryPage;
   let cartPage: CartPage;
   let checkoutPage: CheckoutPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
+    logoutPage = new LogoutPage(page);
     inventoryPage = new InventoryPage(page);
     await loginPage.navigate();
     await loginPage.login("standard_user", "secret_sauce");
@@ -19,9 +22,7 @@ test.describe("Shopping Cart – Add Item Tests", () => {
 
   test.afterEach(async ({ page }) => {
     await page.getByRole("button", { name: "Open Menu" }).click();
-    const logout = page.locator('[data-test="logout-sidebar-link"]');
-    await expect(logout).toBeVisible();
-    await logout.click();
+    await logoutPage.logout();
   });
 
   test("User can add 1 item to the cart", async ({ page }) => {

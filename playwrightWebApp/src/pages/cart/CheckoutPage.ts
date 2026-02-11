@@ -14,6 +14,7 @@ export class CheckoutPage {
   readonly logoutButton: Locator;
   readonly openMenuButton: Locator;
   
+  // elements checkout page
   constructor(page: Page) {
     this.page = page;
     this.firstNameInput = page.locator('[data-test="firstName"]');

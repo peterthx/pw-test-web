@@ -5,6 +5,7 @@ export class CartPage {
     readonly checkoutButton: Locator;
     readonly continueShoppingButton: Locator;
 
+    // elements cart page
     constructor(page: Page) {
         this.page = page;
         this.checkoutButton = page.locator('[data-test="checkout"]');
