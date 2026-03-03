@@ -5,3 +5,16 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Environment files
+.env*
+.env.local
+.env.*.local
+
+# System and IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
