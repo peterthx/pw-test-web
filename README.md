@@ -1,33 +1,30 @@
 # Playwright Web Testing Framework
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://jenkins.example.com)
-[![Playwright Version](https://img.shields.io/badge/playwright-1.49.0-blue)](https://playwright.dev/)
+[![Playwright Version](https://img.shields.io/badge/playwright-1.58.2-blue)](https://playwright.dev/)
 
-A robust and scalable web automation testing framework built with [Playwright](https://playwright.dev/) and TypeScript, following the **Page Object Model (POM)** design pattern. This project is designed to provide a solid foundation for end-to-end testing of web applications.
+A robust and scalable web automation testing framework built with [Playwright](https://playwright.dev/) and TypeScript, following the **Page Object Model (POM)** design pattern. This project provides a solid foundation for end-to-end testing of web applications, specifically targeting the [Swag Labs](https://www.saucedemo.com/) demo site.
 
 ## 🚀 Key Features
 
 - **Page Object Model:** Clean separation between test logic and UI elements.
-- **Custom Fixtures:** Simplified test setup and improved readability.
+- **Custom Fixtures:** Simplified test setup and improved readability using `test.extend`.
 - **Cross-Browser Testing:** Support for Chromium, Firefox, and WebKit.
-- **CI/CD Ready:** Integrated with Jenkins for automated test execution.
-- **Detailed Reporting:** Generates HTML reports and JUnit XML for test results.
+- **Detailed Reporting:** Generates HTML reports and supports trace viewing.
+- **Typed Test Data:** Centralized user and test data management.
 
 ## 📁 Project Structure
 
 ```text
 pw-test-web/
-├── Jenkinsfile             # CI/CD pipeline definition
 ├── README.md               # Project documentation
-├── playwrightWebApp/       # Core testing project
-│   ├── playwright.config.ts # Playwright configuration
-│   ├── package.json        # Dependencies and scripts
-│   └── src/                # Source code
-│       ├── data/           # Test data (e.g., users, constants)
-│       ├── fixture/        # Custom Playwright fixtures
-│       ├── pages/          # Page Object classes (organized by module)
-│       └── tests/          # Test specifications (.spec.ts)
-└── test-results/           # (Ignored) Local test execution results
+└── playwrightWebApp/       # Core testing project
+    ├── playwright.config.ts # Playwright configuration
+    ├── package.json        # Dependencies and scripts
+    └── src/                # Source code
+        ├── data/           # Test data (e.g., users.ts)
+        ├── fixture/        # Custom Playwright fixtures and BasePage
+        ├── pages/          # Page Object classes (auth, cart, inventory)
+        └── tests/          # Test specifications (.spec.ts)
 ```
 
 ## 🛠️ Getting Started
@@ -66,7 +63,8 @@ All commands should be executed from the `playwrightWebApp` directory.
 
 | Command | Description |
 | :--- | :--- |
-| `npx playwright test` | Run all tests in headless mode. |
+| `npm test` | Run all tests in headless mode. |
+| `npm run test:headed` | Run all tests in headed mode. |
 | `npx playwright test --ui` | Run tests in the interactive UI mode. |
 | `npx playwright test --project=chromium` | Run tests only on Chromium. |
 | `npx playwright test src/tests/auth/` | Run all tests in the auth module. |
@@ -77,29 +75,26 @@ All commands should be executed from the `playwrightWebApp` directory.
 We follow strict POM guidelines to ensure maintainability:
 
 1. **Encapsulation:** Locators are kept private or internal to the Page Object. Expose actions via methods (e.g., `login(user, pass)` instead of exposing `usernameInput`).
-2. **Assertions:** Keep assertions in `.spec.ts` files. Page Objects should only provide actions and state.
-3. **Chainable Actions:** Methods that navigate to a new page should return an instance of that Page Object.
-4. **Fixtures:** Use `src/fixture/page-fixture.ts` to inject Page Objects directly into tests for cleaner setup.
+2. **Assertions:** Keep assertions in `.spec.ts` files when possible, using Playwright's `expect`.
+3. **BasePage:** All page objects extend `BasePage` to share common methods like `navigate()`.
+4. **Fixtures:** Use `src/fixture/page-fixture.ts` to inject Page Objects and test data directly into tests.
 
 ### Example Usage in Test
 
 ```typescript
-import { test } from '../fixture/page-fixture';
+import { test, expect } from '../../fixture/page-fixture';
 
-test('User should be able to login successfully', async ({ loginPage, inventoryPage }) => {
-  await loginPage.navigateTo();
-  await loginPage.login('standard_user', 'secret_sauce');
-  await inventoryPage.expectToBeVisible();
+test('User should be able to login successfully', async ({ loginPage, users }) => {
+  await loginPage.navigate();
+  await loginPage.login(users.standard_user.username, users.standard_user.password);
+  await expect(loginPage.page).toHaveURL(/inventory.html/);
 });
 ```
 
-## 🤖 CI/CD Integration
+## 📊 Reporting
 
-This project includes a `Jenkinsfile` for automated testing. The pipeline is configured to:
-1. Install dependencies.
-2. Run tests across all configured browsers.
-3. Publish HTML reports and JUnit results.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Tests generate an HTML report by default. To view the report after a test run:
+```bash
+npx playwright show-report
+```
+Traces are also recorded on first retry for easier debugging of failed tests.
