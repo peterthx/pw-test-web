@@ -1,75 +1,75 @@
-import { type Page, type Locator } from "@playwright/test";
+import { Page } from "@playwright/test";
+import { BasePage } from "../../fixture/BasePage";
 
-export class InventoryPage {
-  readonly page: Page;
-  readonly cartLink: Locator;
-  readonly cartShopLink: Locator;
-
-  // add items
-  readonly addToCartSauceBackpackButton: Locator;
-  readonly addToCartSaucelabsBoltTshirtButton: Locator;
-  readonly addToCartSauceLabsOnesieButton: Locator;
-  readonly addToCartSauceLabsBikeLightButton: Locator;
-  readonly addToCartSauceLabsFleeceJacketButton: Locator;
-  readonly addToCartAllTheThingsShirtRedButton: Locator;
-
-  // remove items
-  readonly removeSauceLabsBackpackButton: Locator;
-  readonly removeSauceLabsBoltTshirtButton: Locator;
-  readonly removeSauceLabsOnesieButton: Locator;
-  readonly removeSauceLabsBikeLightButton: Locator;
-  readonly removeSauceLabsFleeceJacketButton: Locator;
-  readonly removeAllTheThingsTshirtRedButton: Locator;
-
+export class InventoryPage extends BasePage {
   constructor(page: Page) {
-    this.page = page;
-    this.cartLink = page.locator(".shopping_cart_link");
-    this.cartShopLink = page.locator('[data-test="shopping-cart-link"]');
+    super(page);
+  }
 
+  //-- elements inventory page ---//
+  get cartLink() {
+    return this.page.locator(".shopping_cart_link");
+  }
+  get cartShopLink() {
+    return this.page.locator('[data-test="shopping-cart-link"]');
+  }
 
-    // add item
-    this.addToCartSauceBackpackButton = page.locator(
-      '[data-test="add-to-cart-sauce-labs-backpack"]'
+  //--- add items ---//
+  get addToCartSauceBackpackButton() {
+    return this.page.locator('[data-test="add-to-cart-sauce-labs-backpack"]');
+  }
+  get addToCartSaucelabsBoltTshirtButton() {
+    return this.page.locator(
+      '[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]',
     );
-    this.addToCartSaucelabsBoltTshirtButton = page.locator(
-      '[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]'
-    );
-    this.addToCartSauceLabsOnesieButton = page.locator(
-      '[data-test="add-to-cart-sauce-labs-onesie"]'
-    );
-    this.addToCartSauceLabsBikeLightButton = page.locator(
-      '[data-test="add-to-cart-sauce-labs-bike-light"]'
-    );
-    this.addToCartSauceLabsFleeceJacketButton = page.locator(
-      '[data-test="add-to-cart-sauce-labs-fleece-jacket"]'
-    );
-    this.addToCartAllTheThingsShirtRedButton = page.locator(
-      '[data-test="add-to-cart-test.allthethings()-t-shirt-(red)"]'
-    );
+  }
+  get addToCartSauceLabsOnesieButton() {
+    return this.page.locator('[data-test="add-to-cart-sauce-labs-onesie"]');
+  }
 
-    // remove item
-    this.removeSauceLabsBackpackButton = page.locator(
-      '[data-test="remove-sauce-labs-backpack"]'
+  get addToCartSauceLabsBikeLightButton() {
+    return this.page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]');
+  }
+
+  get addToCartSauceLabsFleeceJacketButton() {
+    return this.page.locator(
+      '[data-test="add-to-cart-sauce-labs-fleece-jacket"]',
     );
-    this.removeSauceLabsBoltTshirtButton = page.locator(
-      '[data-test="remove-sauce-labs-bolt-t-shirt"]'
+  }
+  get addToCartAllTheThingsShirtRedButton() {
+    return this.page.locator(
+      '[data-test="add-to-cart-test.allthethings()-t-shirt-(red)"]',
     );
-    this.removeSauceLabsOnesieButton = page.locator(
-      '[data-test="remove-sauce-labs-onesie"]'
-    );
-    this.removeSauceLabsBikeLightButton = page.locator(
-      '[data-test="remove-sauce-labs-bike-light"]'
-    );
-    this.removeSauceLabsFleeceJacketButton = page.locator(
-      '[data-test="remove-sauce-labs-fleece-jacket"]'
-    );
-    this.removeAllTheThingsTshirtRedButton = page.locator(
-      '[data-test="remove-test.allthethings()-t-shirt-(red)"]'
+  }
+
+  //--- remove items ---//
+  get removeSauceLabsBackpackButton() {
+    return this.page.locator('[data-test="remove-sauce-labs-backpack"]');
+  }
+  get removeSauceLabsBoltTshirtButton() {
+    return this.page.locator('[data-test="remove-sauce-labs-bolt-t-shirt"]');
+  }
+  get removeSauceLabsOnesieButton() {
+    return this.page.locator('[data-test="remove-sauce-labs-onesie"]');
+  }
+
+  get removeSauceLabsBikeLightButton() {
+    return this.page.locator('[data-test="remove-sauce-labs-bike-light"]');
+  }
+
+  get removeSauceLabsFleeceJacketButton() {
+    return this.page.locator('[data-test="remove-sauce-labs-fleece-jacket"]');
+  }
+  get removeAllTheThingsTshirtRedButton() {
+    return this.page.locator(
+      '[data-test="remove-test.allthethings()-t-shirt-(red)"]',
     );
   }
 
   async addAllItemsToCart() {
-    while (await this.page.locator('[data-test^="add-to-cart-"]').count() > 0) {
+    while (
+      (await this.page.locator('[data-test^="add-to-cart-"]').count()) > 0
+    ) {
       await this.page.locator('[data-test^="add-to-cart-"]').first().click();
     }
   }

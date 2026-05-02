@@ -1,31 +1,18 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../pages/auth/LoginPage";
-import { InventoryPage } from "../../pages/inventory/InventoryPage";
-import { CartPage } from "../../pages/cart/CartPage";
-import { CheckoutPage } from "../../pages/cart/CheckoutPage";
+import { test, expect } from "../../fixture/page-fixture";
 
 test.describe("Remove Item from Cart Tests", () => {
-  let loginPage: LoginPage;
-  let inventoryPage: InventoryPage;
-  let cartPage: CartPage;
-  let checkoutPage: CheckoutPage;
 
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-
+  test.beforeEach(async ({ loginPage, users}) => {
     await loginPage.navigate();
-    await loginPage.login("standard_user", "secret_sauce");
+    await loginPage.login(users.standard_user.username, users.standard_user.password);
   });
 
-  test.afterEach(async () => {
+  test.afterEach(async ({ checkoutPage }) => {
     await checkoutPage.openMenu();
     await checkoutPage.logout();
   });
 
-  test("should remove a single item from the cart", async () => {
+  test("TC001 - should remove a single item from the cart", async ({inventoryPage}) => {
 
     // Add a single item and verify it's in the cart
     await inventoryPage.addToCartSauceBackpackButton.click();
@@ -39,7 +26,7 @@ test.describe("Remove Item from Cart Tests", () => {
     await expect(inventoryPage.cartLink).toHaveText("");
   });
 
-  test("should remove one of multiple items from the cart", async ({ page }) => {
+  test("TC002 - should remove one of multiple items from the cart", async ({inventoryPage}) => {
 
     // Add multiple items
     await inventoryPage.addToCartSaucelabsBoltTshirtButton.click();
@@ -53,7 +40,7 @@ test.describe("Remove Item from Cart Tests", () => {
     await expect(inventoryPage.cartLink).toContainText("2");
   });
 
-  test("should remove all items from the cart", async ({ page }) => {
+  test("TC003 - should remove all items from the cart", async ({inventoryPage, cartPage}) => {
 
     // Add all items to the cart
     await inventoryPage.addAllItemsToCart();

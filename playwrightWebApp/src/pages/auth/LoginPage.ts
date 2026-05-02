@@ -1,22 +1,28 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, Page } from "@playwright/test";
+import { BasePage } from "../../fixture/BasePage";
 
-export class LoginPage {
-  readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly errorMessage: Locator;
-
+export class LoginPage extends BasePage {
   constructor(page: Page) {
-    this.page = page;
-    this.usernameInput = page.locator('#user-name');
-    this.passwordInput = page.locator('#password');
-    this.loginButton = page.locator('#login-button');
-    this.errorMessage = page.locator('[data-test="error"]');
+    super(page);
+  }
+  get usernameInput() {
+    return this.page.locator("#user-name");
+  }
+
+  get passwordInput() {
+    return this.page.locator("#password");
+  }
+
+  get loginButton() {
+    return this.page.locator("#login-button");
+  }
+
+  get errorMessage() {
+    return this.page.locator('[data-test="error"]');
   }
 
   async navigate() {
-    await this.page.goto('/');
+    await this.page.goto("/");
   }
 
   async login(username: string, password: string) {

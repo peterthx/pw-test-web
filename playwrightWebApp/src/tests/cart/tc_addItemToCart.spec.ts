@@ -1,44 +1,30 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../pages/auth/LoginPage";
-import { LogoutPage } from "../../pages/auth/LogoutPage";
-import { InventoryPage } from "../../pages/inventory/InventoryPage";
-import { CartPage } from "../../pages/cart/CartPage";
-import { CheckoutPage } from "../../pages/cart/CheckoutPage";
+import { test, expect } from "../../fixture/page-fixture";
 
 test.describe("Shopping Cart – Add Item Tests", () => {
-  let loginPage: LoginPage;
-  let logoutPage: LogoutPage;
-  let inventoryPage: InventoryPage;
-  let cartPage: CartPage;
-  let checkoutPage: CheckoutPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    logoutPage = new LogoutPage(page);
-    inventoryPage = new InventoryPage(page);
+  test.beforeEach(async ({ loginPage, users }) => {
     await loginPage.navigate();
-    await loginPage.login("standard_user", "secret_sauce");
+    await loginPage.login(
+      users.standard_user.username,
+      users.standard_user.password,
+    );
   });
 
-  test.afterEach(async ({ page }) => {
-    await page.getByRole("button", { name: "Open Menu" }).click();
+  test.afterEach(async ({ logoutPage }) => {
+    await logoutPage.openMenu();
     await logoutPage.logout();
   });
 
-  test("User can add 1 item to the cart", async ({ page }) => {
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-
+  test("TC001 - User can add 1 item to the cart", async ({
+    cartPage,
+    checkoutPage,
+    inventoryPage,
+  }) => {
     await inventoryPage.addToCartSauceBackpackButton.click();
     await expect(inventoryPage.cartLink).toContainText("1");
     await inventoryPage.cartLink.click();
     await cartPage.goToCheckout();
 
-    await checkoutPage.inputAddress(
-      "John", 
-      "Smith", 
-      "1989 San Francisco US"
-    );
+    await checkoutPage.inputAddress("John", "Smith", "1989 San Francisco US");
 
     await expect(checkoutPage.subtotalLabel).toContainText("$29.99");
     await expect(checkoutPage.taxLabel).toContainText("$2.40");
@@ -48,10 +34,11 @@ test.describe("Shopping Cart – Add Item Tests", () => {
     await checkoutPage.backToProducts();
   });
 
-  test("User can add multiple items to the cart", async ({ page }) => {
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-
+  test("TC002 - User can add multiple items to the cart", async ({
+    cartPage,
+    checkoutPage,
+    inventoryPage,
+  }) => {
     await inventoryPage.addToCartSauceBackpackButton.click();
     await inventoryPage.addToCartSaucelabsBoltTshirtButton.click();
     await inventoryPage.addToCartSauceLabsBikeLightButton.click();
@@ -62,7 +49,7 @@ test.describe("Shopping Cart – Add Item Tests", () => {
     await checkoutPage.inputAddress(
       "Lily",
       "Park",
-      "77 Castro St, Mountain View, CA"
+      "77 Castro St, Mountain View, CA",
     );
 
     await expect(checkoutPage.subtotalLabel).toContainText("$55.97");
@@ -73,12 +60,12 @@ test.describe("Shopping Cart – Add Item Tests", () => {
     await checkoutPage.backToProducts();
   });
 
-  test("User can add all items to the cart", async ({ page }) => {
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-
+  test("TC003 - User can add all items to the cart", async ({
+    cartPage,
+    checkoutPage,
+    inventoryPage,
+  }) => {
     await inventoryPage.addAllItemsToCart();
-
     await expect(inventoryPage.cartLink).toContainText("6");
     await inventoryPage.cartLink.click();
     await cartPage.goToCheckout();
@@ -86,7 +73,7 @@ test.describe("Shopping Cart – Add Item Tests", () => {
     await checkoutPage.inputAddress(
       "Noah",
       "Foster",
-      "210 University Ave, Palo Alto, CA"
+      "210 University Ave, Palo Alto, CA",
     );
 
     await expect(checkoutPage.subtotalLabel).toContainText("$129.94");

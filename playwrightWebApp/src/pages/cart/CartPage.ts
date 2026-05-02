@@ -1,18 +1,20 @@
-import { type Page, type Locator } from "@playwright/test";
+import { Page } from "@playwright/test";
+import { BasePage } from "../../fixture/BasePage";
 
-export class CartPage {
-    readonly page: Page;
-    readonly checkoutButton: Locator;
-    readonly continueShoppingButton: Locator;
+export class CartPage extends BasePage {
+  constructor(page: Page) {
+    super(page);
+  }
 
-    // elements cart page
-    constructor(page: Page) {
-        this.page = page;
-        this.checkoutButton = page.locator('[data-test="checkout"]');
-        this.continueShoppingButton = page.locator('[data-test="continue-shopping"]')
-    }
+  get checkoutButton() {
+    return this.page.locator('[data-test="checkout"]');
+  }
 
-    async goToCheckout() {
-        await this.checkoutButton.click();
-    }
+  get continueShoppingButton() {
+    return this.page.locator('[data-test="continue-shopping"]');
+  }
+
+  async goToCheckout() {
+    await this.checkoutButton.click();
+  }
 }

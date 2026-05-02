@@ -1,122 +1,105 @@
-# Playwright Web Application Testing Project
+# Playwright Web Testing Framework
 
-This project utilizes Playwright for web application testing, following the Page Object Model (POM) pattern for maintainability and scalability.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://jenkins.example.com)
+[![Playwright Version](https://img.shields.io/badge/playwright-1.49.0-blue)](https://playwright.dev/)
 
-## Project Setup
+A robust and scalable web automation testing framework built with [Playwright](https://playwright.dev/) and TypeScript, following the **Page Object Model (POM)** design pattern. This project is designed to provide a solid foundation for end-to-end testing of web applications.
 
-To set up the project locally, follow these steps:
+## 🚀 Key Features
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/pw-test-web.git
-    cd pw-test-web
-    ```
+- **Page Object Model:** Clean separation between test logic and UI elements.
+- **Custom Fixtures:** Simplified test setup and improved readability.
+- **Cross-Browser Testing:** Support for Chromium, Firefox, and WebKit.
+- **CI/CD Ready:** Integrated with Jenkins for automated test execution.
+- **Detailed Reporting:** Generates HTML reports and JUnit XML for test results.
 
-2.  **Navigate to the Playwright project directory:**
-    ```bash
-    cd playwrightWebApp
-    ```
+## 📁 Project Structure
 
-3.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-## Running Tests
-
-Tests can be run using the Playwright Test Runner.
-
-*   **Run all tests:**
-    ```bash
-    npx playwright test
-    ```
-
-*   **Run tests in UI mode:**
-    ```bash
-    npx playwright test --ui
-    ```
-
-*   **Run a specific test file:**
-    ```bash
-    npx playwright test tests/auth/LoginSuccess.spec.ts
-    ```
-
-*   **Run tests with a specific project (e.g., Chromium):**
-    ```bash
-    npx playwright test --project=chromium
-    ```
-
-*   **Generate a test report:**
-    After running tests, you can view the HTML report:
-    ```bash
-    npx playwright show-report
-    ```
-
-## Page Object Model (POM) Guidelines
-
-The Page Object Model (POM) is a design pattern used in test automation to create an object repository for UI elements within web applications. This improves test maintenance and reduces code duplication.
-
-### Structure
-
-*   Page objects are located in the `pages/` directory, organized by functional areas (e.g., `auth`, `cart`, `inventory`).
-*   Each `.ts` file within `pages/` represents a single page or a significant component of a page.
-
-### Best Practices
-
-1.  **Encapsulation:** Each Page Object should encapsulate the services offered by the page, meaning it should expose methods that represent user interactions with that page, rather than exposing the raw locators.
-    ```typescript
-    // Bad
-    await page.locator('#username').fill('testuser');
-
-    // Good
-    await loginPage.login('testuser', 'password');
-    ```
-
-2.  **Locators:**
-    *   Use robust, resilient locators. Prefer roles, text, or test IDs over fragile CSS or XPath selectors that might change frequently.
-    *   Locators should be defined as properties within the Page Object class.
-
-3.  **Methods:**
-    *   Page Object methods should return other Page Objects when a user action results in navigating to a new page.
-    *   Methods should ideally represent a user action and not expose the internal implementation details of the page.
-    *   Avoid assertions within Page Objects. Assertions belong in the test files (`.spec.ts`).
-
-4.  **No Test Logic:** Page Objects should not contain test-specific assertions or test logic. Their sole responsibility is to interact with the web page and return the state or navigate to another page.
-
-### Example (LoginPage.ts)
-
-```typescript
-import { Page, Locator } from '@playwright/test';
-
-export class LoginPage {
-  readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly errorMessage: Locator;
-
-  constructor(page: Page) {
-    this.page = page;
-    this.usernameInput = page.locator('#user-name');
-    this.passwordInput = page.locator('#password');
-    this.loginButton = page.locator('#login-button');
-    this.errorMessage = page.locator('[data-test="error"]');
-  }
-
-  async navigateTo(): Promise<void> {
-    await this.page.goto('/');
-  }
-
-  async login(username: string, password_val: string): Promise<void> {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password_val);
-    await this.loginButton.click();
-  }
-
-  async getErrorMessage(): Promise<string | null> {
-    return this.errorMessage.textContent();
-  }
-}
+```text
+pw-test-web/
+├── Jenkinsfile             # CI/CD pipeline definition
+├── README.md               # Project documentation
+├── playwrightWebApp/       # Core testing project
+│   ├── playwright.config.ts # Playwright configuration
+│   ├── package.json        # Dependencies and scripts
+│   └── src/                # Source code
+│       ├── data/           # Test data (e.g., users, constants)
+│       ├── fixture/        # Custom Playwright fixtures
+│       ├── pages/          # Page Object classes (organized by module)
+│       └── tests/          # Test specifications (.spec.ts)
+└── test-results/           # (Ignored) Local test execution results
 ```
 
-This `README.md` serves as a central guide for anyone working on the Playwright test automation project.
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [npm](https://www.npmjs.com/) (v9 or higher)
+
+### Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/pw-test-web.git
+   cd pw-test-web
+   ```
+
+2. **Navigate to the web app directory:**
+   ```bash
+   cd playwrightWebApp
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+4. **Install Playwright Browsers:**
+   ```bash
+   npx playwright install --with-deps
+   ```
+
+## 🧪 Running Tests
+
+All commands should be executed from the `playwrightWebApp` directory.
+
+| Command | Description |
+| :--- | :--- |
+| `npx playwright test` | Run all tests in headless mode. |
+| `npx playwright test --ui` | Run tests in the interactive UI mode. |
+| `npx playwright test --project=chromium` | Run tests only on Chromium. |
+| `npx playwright test src/tests/auth/` | Run all tests in the auth module. |
+| `npx playwright show-report` | View the latest HTML test report. |
+
+## 🏗️ Page Object Model (POM) Guidelines
+
+We follow strict POM guidelines to ensure maintainability:
+
+1. **Encapsulation:** Locators are kept private or internal to the Page Object. Expose actions via methods (e.g., `login(user, pass)` instead of exposing `usernameInput`).
+2. **Assertions:** Keep assertions in `.spec.ts` files. Page Objects should only provide actions and state.
+3. **Chainable Actions:** Methods that navigate to a new page should return an instance of that Page Object.
+4. **Fixtures:** Use `src/fixture/page-fixture.ts` to inject Page Objects directly into tests for cleaner setup.
+
+### Example Usage in Test
+
+```typescript
+import { test } from '../fixture/page-fixture';
+
+test('User should be able to login successfully', async ({ loginPage, inventoryPage }) => {
+  await loginPage.navigateTo();
+  await loginPage.login('standard_user', 'secret_sauce');
+  await inventoryPage.expectToBeVisible();
+});
+```
+
+## 🤖 CI/CD Integration
+
+This project includes a `Jenkinsfile` for automated testing. The pipeline is configured to:
+1. Install dependencies.
+2. Run tests across all configured browsers.
+3. Publish HTML reports and JUnit results.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
